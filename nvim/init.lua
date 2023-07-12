@@ -52,6 +52,14 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		event = { "BufReadPost", "BufNewFile" },
 		build = ":TSUpdate",
+		config = function()
+			require'nvim-treesitter.configs'.setup {
+				auto_install = true,
+				highlight = {
+					enable = true
+				}
+			}
+		end,
 	},
 	{
 		"ggandor/leap.nvim",
@@ -111,7 +119,6 @@ require("lazy").setup({
 			{ "neovim/nvim-lspconfig" }, -- Required
 			{ -- Optional
 				"williamboman/mason.nvim",
-				build = ":MasonUpdate",
 			},
 			{ "williamboman/mason-lspconfig.nvim" }, -- Optional
 
@@ -227,6 +234,7 @@ require("lazy").setup({
 					null_ls.builtins.diagnostics.eslint,
 					null_ls.builtins.formatting.stylua,
 					null_ls.builtins.formatting.clang_format,
+					null_ls.builtins.formatting.ocamlformat,
 				},
 			}
 		end,
@@ -236,10 +244,10 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
-	{
-		"ray-x/lsp_signature.nvim",
-		opts = {},
-	},
+	-- {
+	-- 	"ray-x/lsp_signature.nvim",
+	-- 	opts = {},
+	-- },
 	{
 		"stevearc/dressing.nvim",
 		opts = {},
