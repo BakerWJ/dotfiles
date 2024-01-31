@@ -47,18 +47,19 @@ require("lazy").setup({
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
+		opts = {},
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
 		event = { "BufReadPost", "BufNewFile" },
 		build = ":TSUpdate",
 		config = function()
-			require'nvim-treesitter.configs'.setup {
+			require("nvim-treesitter.configs").setup({
 				auto_install = true,
 				highlight = {
-					enable = true
-				}
-			}
+					enable = true,
+				},
+			})
 		end,
 	},
 	{
@@ -72,7 +73,6 @@ require("lazy").setup({
 		end,
 	},
 	"tpope/vim-sleuth",
-	"nathom/filetype.nvim",
 	{
 		"nvim-lualine/lualine.nvim",
 		requires = { "nvim-tree/nvim-web-devicons" },
@@ -113,7 +113,7 @@ require("lazy").setup({
 	},
 	{
 		"VonHeikemen/lsp-zero.nvim",
-		branch = "v2.x",
+		branch = "v3.x",
 		dependencies = {
 			-- LSP Support
 			{ "neovim/nvim-lspconfig" }, -- Required
@@ -133,6 +133,16 @@ require("lazy").setup({
 			{ "rafamadriz/friendly-snippets" },
 		},
 		config = function()
+			local lsp_zero = require("lsp-zero")
+
+			-- mason
+			require("mason").setup({})
+			require("mason-lspconfig").setup({
+				handlers = {
+					lsp_zero.default_setup,
+				},
+			})
+
 			-- null_ls setup
 			local lsp_formatting = function(bufnr)
 				vim.lsp.buf.format({
@@ -163,14 +173,12 @@ require("lazy").setup({
 				end
 			end
 
-			local lsp = require("lsp-zero").preset({})
+			local lsp = lsp_zero.preset({})
 
 			lsp.on_attach(function(client, bufnr)
 				lsp.default_keymaps({ buffer = bufnr })
 				null_ls_attach(client, bufnr)
 			end)
-
-			lsp.skip_server_setup({ "jdtls" })
 
 			lsp.setup()
 
@@ -225,16 +233,14 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		opts = function()
 			local null_ls = require("null-ls")
 
 			return {
 				sources = {
-					null_ls.builtins.diagnostics.eslint,
 					null_ls.builtins.formatting.stylua,
-					null_ls.builtins.formatting.clang_format,
-					null_ls.builtins.formatting.ocamlformat,
+					null_ls.builtins.formatting.rustfmt,
 				},
 			}
 		end,
@@ -244,15 +250,16 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
-	-- {
-	-- 	"ray-x/lsp_signature.nvim",
-	-- 	opts = {},
-	-- },
 	{
 		"stevearc/dressing.nvim",
 		opts = {},
 	},
-	"mfussenegger/nvim-jdtls",
+	{
+		"stevearc/oil.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
 })
 
 vim.opt.encoding = "utf-8"
